@@ -13,10 +13,10 @@ type App struct {
 	config *Config
 }
 
-func New(ctx context.Context) (*App, error) {
+func New(ctx context.Context, opt *Option) (*App, error) {
 	loader := newConfigLoader()
 
-	conf, err := loader.Load(ctx)
+	conf, err := loader.Load(ctx, opt.ConfigFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load config: %w", err)
 	}
@@ -27,4 +27,8 @@ func New(ctx context.Context) (*App, error) {
 
 		config: conf,
 	}, nil
+}
+
+type Option struct {
+	ConfigFilePath string
 }

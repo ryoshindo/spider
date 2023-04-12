@@ -3,12 +3,14 @@ package spider
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/goccy/go-yaml"
 )
 
 var (
@@ -19,7 +21,12 @@ var (
 )
 
 type Config struct {
-	Region string
+	Region string `yaml:"region"`
+	Mesh   struct {
+		Name  string `yaml:"name"`
+		Owner string `yaml:"owner"`
+	} `yaml:"mesh"`
+	VirtualNodes []string `yaml:"virtual_nodes"`
 
 	awsConfig aws.Config
 }
@@ -31,8 +38,23 @@ func newConfigLoader() *configLoader {
 	return &configLoader{}
 }
 
-func (l *configLoader) Load(ctx context.Context) (*Config, error) {
+func (l *configLoader) Load(ctx context.Context, path string) (*Config, error) {
 	conf := &Config{}
+
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open config file: %w", err)
+	}
+	defer file.Close()
+
+	content, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read config file: %w", err)
+	}
+
+	if err := yaml.Unmarshal(content, conf); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal config file: %w", err)
+	}
 
 	if err := conf.Restrict(ctx); err != nil {
 		return nil, err
