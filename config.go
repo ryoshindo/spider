@@ -32,6 +32,7 @@ type Config struct {
 		Definition string   `yaml:"definition"`
 		Routes     []string `yaml:"routes"`
 	} `yaml:"virtual_routers"`
+	VirtualServices []string `yaml:"virtual_services"`
 
 	awsConfig aws.Config
 }

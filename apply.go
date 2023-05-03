@@ -12,6 +12,18 @@ func (s *App) Describe(ctx context.Context) error {
 		return err
 	}
 
+	if _, err := s.DescribeVirtualRouter(ctx); err != nil {
+		return err
+	}
+
+	if _, err := s.DescribeRoute(ctx); err != nil {
+		return err
+	}
+
+	if _, err := s.DescribeVirtualService(ctx); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -69,6 +81,21 @@ func (s *App) DescribeRoute(ctx context.Context) (*appmesh.DescribeRouteOutput, 
 	return output, nil
 }
 
+func (s *App) DescribeVirtualService(ctx context.Context) (*appmesh.DescribeVirtualServiceOutput, error) {
+	vs := &describeVirtualService{s}
+	input, err := vs.Load(s.config.VirtualServices[0]) // FIXME: Allow for multiple file support
+	if err != nil {
+		return &appmesh.DescribeVirtualServiceOutput{}, err
+	}
+
+	output, err := s.appmesh.DescribeVirtualService(ctx, input)
+	if err != nil {
+		return &appmesh.DescribeVirtualServiceOutput{}, err
+	}
+
+	return output, nil
+}
+
 func (s *App) Apply(ctx context.Context) error {
 	if err := s.ApplyVirtualNode(ctx); err != nil {
 		return err
@@ -79,6 +106,10 @@ func (s *App) Apply(ctx context.Context) error {
 	}
 
 	if err := s.ApplyRoute(ctx); err != nil {
+		return err
+	}
+
+	if err := s.ApplyVirtualService(ctx); err != nil {
 		return err
 	}
 
@@ -146,6 +177,29 @@ func (s *App) ApplyRoute(ctx context.Context) error {
 		input, err := r.Load(s.config.VirtualRouters[0].Routes[0], *output.Route.VirtualRouterName) // FIXME: Allow for multiple file support
 
 		_, err = s.appmesh.UpdateRoute(ctx, input)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *App) ApplyVirtualService(ctx context.Context) error {
+	output, _ := s.DescribeVirtualService(ctx)
+	if output.VirtualService == nil {
+		r := &createVirtualService{s}
+		input, err := r.Load(s.config.VirtualServices[0]) // FIXME: Allow for multiple file support
+
+		_, err = s.appmesh.CreateVirtualService(ctx, input)
+		if err != nil {
+			return err
+		}
+	} else {
+		r := &updateVirtualService{s}
+		input, err := r.Load(s.config.VirtualServices[0]) // FIXME: Allow for multiple file support
+
+		_, err = s.appmesh.UpdateVirtualService(ctx, input)
 		if err != nil {
 			return err
 		}
