@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/aws/aws-sdk-go-v2/service/appmesh"
+	"github.com/aws/aws-sdk-go-v2/service/appmesh/types"
 )
 
 func (s *App) Describe(ctx context.Context) error {
@@ -30,8 +31,8 @@ func (s *App) DescribeVirtualNode(ctx context.Context) (*appmesh.DescribeVirtual
 }
 
 func (s *App) DescribeVirtualRouter(ctx context.Context) (*appmesh.DescribeVirtualRouterOutput, error) {
-	vn := &describeVirtualRouter{s}
-	input, err := vn.Load(s.config.VirtualRouters[0]) // FIXME: Allow for multiple file support
+	vr := &describeVirtualRouter{s}
+	input, err := vr.Load(s.config.VirtualRouters[0].Definition) // FIXME: Allow for multiple file support
 	if err != nil {
 		return &appmesh.DescribeVirtualRouterOutput{}, err
 	}
@@ -44,12 +45,40 @@ func (s *App) DescribeVirtualRouter(ctx context.Context) (*appmesh.DescribeVirtu
 	return output, nil
 }
 
+func (s *App) DescribeRoute(ctx context.Context) (*appmesh.DescribeRouteOutput, error) {
+	vrOutput, err := s.DescribeVirtualRouter(ctx)
+	if err != nil {
+		return &appmesh.DescribeRouteOutput{}, err
+	}
+
+	r := &describeRoute{s}
+	input, err := r.Load(s.config.VirtualRouters[0].Routes[0], *vrOutput.VirtualRouter.VirtualRouterName) // FIXME: Allow for multiple file support
+	if err != nil {
+		return &appmesh.DescribeRouteOutput{}, err
+	}
+
+	output, err := s.appmesh.DescribeRoute(ctx, input)
+	if err != nil {
+		return &appmesh.DescribeRouteOutput{
+			Route: &types.RouteData{
+				VirtualRouterName: vrOutput.VirtualRouter.VirtualRouterName,
+			},
+		}, err
+	}
+
+	return output, nil
+}
+
 func (s *App) Apply(ctx context.Context) error {
 	if err := s.ApplyVirtualNode(ctx); err != nil {
 		return err
 	}
 
 	if err := s.ApplyVirtualRouter(ctx); err != nil {
+		return err
+	}
+
+	if err := s.ApplyRoute(ctx); err != nil {
 		return err
 	}
 
@@ -82,18 +111,41 @@ func (s *App) ApplyVirtualNode(ctx context.Context) error {
 func (s *App) ApplyVirtualRouter(ctx context.Context) error {
 	output, _ := s.DescribeVirtualRouter(ctx)
 	if output.VirtualRouter == nil {
-		vn := &createVirtualRouter{s}
-		input, err := vn.Load(s.config.VirtualRouters[0]) // FIXME: Allow for multiple file support
+		vr := &createVirtualRouter{s}
+		input, err := vr.Load(s.config.VirtualRouters[0].Definition) // FIXME: Allow for multiple file support
 
 		_, err = s.appmesh.CreateVirtualRouter(ctx, input)
 		if err != nil {
 			return err
 		}
 	} else {
-		vn := &updateVirtualRouter{s}
-		input, err := vn.Load(s.config.VirtualRouters[0]) // FIXME: Allow for multiple file support
+		vr := &updateVirtualRouter{s}
+		input, err := vr.Load(s.config.VirtualRouters[0].Definition) // FIXME: Allow for multiple file support
 
 		_, err = s.appmesh.UpdateVirtualRouter(ctx, input)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *App) ApplyRoute(ctx context.Context) error {
+	output, _ := s.DescribeRoute(ctx)
+	if output.Route.Spec == nil {
+		r := &createRoute{s}
+		input, err := r.Load(s.config.VirtualRouters[0].Routes[0], *output.Route.VirtualRouterName) // FIXME: Allow for multiple file support
+
+		_, err = s.appmesh.CreateRoute(ctx, input)
+		if err != nil {
+			return err
+		}
+	} else {
+		r := &updateRoute{s}
+		input, err := r.Load(s.config.VirtualRouters[0].Routes[0], *output.Route.VirtualRouterName) // FIXME: Allow for multiple file support
+
+		_, err = s.appmesh.UpdateRoute(ctx, input)
 		if err != nil {
 			return err
 		}

@@ -28,7 +28,10 @@ type Config struct {
 		Owner string `yaml:"owner"`
 	} `yaml:"mesh"`
 	VirtualNodes   []string `yaml:"virtual_nodes"`
-	VirtualRouters []string `yaml:"virtual_routers"`
+	VirtualRouters []struct {
+		Definition string   `yaml:"definition"`
+		Routes     []string `yaml:"routes"`
+	} `yaml:"virtual_routers"`
 
 	awsConfig aws.Config
 }
