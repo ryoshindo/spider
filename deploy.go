@@ -38,20 +38,20 @@ func (s *App) Deploy(ctx context.Context) error {
 }
 
 func (s *App) DeployVirtualNode(ctx context.Context) error {
-	_, err := s.DescribeVirtualNode(ctx)
-	if err == nil {
-		vn := &updateVirtualNode{s}
-		input, err := vn.Load(s.config.VirtualNodes[0]) // FIXME: Allow for multiple file support
-
-		_, err = s.appmesh.UpdateVirtualNode(ctx, input)
-		if err != nil {
-			return err
-		}
-	} else {
+	output, _ := s.DescribeVirtualNode(ctx)
+	if output.VirtualNode == nil {
 		vn := &createVirtualNode{s}
 		input, err := vn.Load(s.config.VirtualNodes[0]) // FIXME: Allow for multiple file support
 
 		_, err = s.appmesh.CreateVirtualNode(ctx, input)
+		if err != nil {
+			return err
+		}
+	} else {
+		vn := &updateVirtualNode{s}
+		input, err := vn.Load(s.config.VirtualNodes[0]) // FIXME: Allow for multiple file support
+
+		_, err = s.appmesh.UpdateVirtualNode(ctx, input)
 		if err != nil {
 			return err
 		}

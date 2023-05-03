@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/appmesh"
 )
 
@@ -39,8 +40,8 @@ func (v *describeVirtualNode) Load(path string) (*appmesh.DescribeVirtualNodeInp
 	}
 
 	input := appmesh.DescribeVirtualNodeInput{
-		MeshName:  &v.config.Mesh.Name,
-		MeshOwner: &v.config.Mesh.Owner,
+		MeshName:  aws.String(v.config.Mesh.Name),
+		MeshOwner: aws.String(v.config.Mesh.Owner),
 	}
 	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
 		return &appmesh.DescribeVirtualNodeInput{}, err
@@ -73,8 +74,8 @@ func (v *createVirtualNode) Load(path string) (*appmesh.CreateVirtualNodeInput, 
 	}
 
 	input := appmesh.CreateVirtualNodeInput{
-		MeshName:  &v.config.Mesh.Name,
-		MeshOwner: &v.config.Mesh.Owner,
+		MeshName:  aws.String(v.config.Mesh.Name),
+		MeshOwner: aws.String(v.config.Mesh.Owner),
 	}
 	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
 		return &appmesh.CreateVirtualNodeInput{}, err
@@ -111,8 +112,8 @@ func (v *updateVirtualNode) Load(path string) (*appmesh.UpdateVirtualNodeInput, 
 	}
 
 	input := appmesh.UpdateVirtualNodeInput{
-		MeshName:  &v.config.Mesh.Name,
-		MeshOwner: &v.config.Mesh.Owner,
+		MeshName:  aws.String(v.config.Mesh.Name),
+		MeshOwner: aws.String(v.config.Mesh.Owner),
 	}
 	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
 		return &appmesh.UpdateVirtualNodeInput{}, err
