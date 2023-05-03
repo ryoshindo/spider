@@ -1,0 +1,13 @@
+{
+  "virtualGatewayName": "main-virtual-gateway",
+  "spec": {
+    "listeners": [
+      {
+        "portMapping": {
+          "port": 80,
+          "protocol": "http"
+        }
+      }
+    ]
+  }
+}

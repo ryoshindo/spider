@@ -1,0 +1,17 @@
+{
+  "gatewayRouteName": "main-gateway-route",
+  "spec": {
+    "httpRoute": {
+      "action": {
+        "target": {
+          "virtualService": {
+            "virtualServiceName": "main-virtual-service"
+          }
+        }
+      },
+      "match": {
+        "prefix": "/"
+      }
+    }
+  }
+}

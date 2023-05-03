@@ -1,0 +1,18 @@
+{
+  "routeName": "main-route",
+  "spec": {
+    "httpRoute": {
+      "action": {
+        "weightedTargets": [
+          {
+            "virtualNode": "main-virtual-node",
+            "weight": 100
+          }
+        ]
+      },
+      "match": {
+        "prefix": "/"
+      }
+    }
+  }
+}
