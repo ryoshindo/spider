@@ -1,6 +1,7 @@
 package spider
 
 import (
+	"bytes"
 	"encoding/json"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -29,7 +30,8 @@ func (v *describeVirtualService) Load(path string) (*appmesh.DescribeVirtualServ
 		VirtualServiceDefinition json.RawMessage `json:"virtualServiceDefinition"`
 	}{}
 
-	if err := v.UnmarshalJsonForStruct(src, &c, path); err != nil {
+	dec := json.NewDecoder(bytes.NewReader(src))
+	if err := dec.Decode(&c); err != nil {
 		return &appmesh.DescribeVirtualServiceInput{}, err
 	}
 
@@ -63,7 +65,8 @@ func (v *createVirtualService) Load(path string) (*appmesh.CreateVirtualServiceI
 		VirtualServiceDefinition json.RawMessage `json:"virtualServiceDefinition"`
 	}{}
 
-	if err := v.UnmarshalJsonForStruct(src, &c, path); err != nil {
+	dec := json.NewDecoder(bytes.NewReader(src))
+	if err := dec.Decode(&c); err != nil {
 		return &appmesh.CreateVirtualServiceInput{}, err
 	}
 
@@ -97,7 +100,8 @@ func (v *updateVirtualService) Load(path string) (*appmesh.UpdateVirtualServiceI
 		VirtualServiceDefinition json.RawMessage `json:"virtualServiceDefinition"`
 	}{}
 
-	if err := v.UnmarshalJsonForStruct(src, &c, path); err != nil {
+	dec := json.NewDecoder(bytes.NewReader(src))
+	if err := dec.Decode(&c); err != nil {
 		return &appmesh.UpdateVirtualServiceInput{}, err
 	}
 
