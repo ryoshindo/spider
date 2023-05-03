@@ -16,11 +16,11 @@ type GatewayRouteDefinitionInput interface {
 	*appmesh.DescribeGatewayRouteInput | *appmesh.CreateGatewayRouteInput | *appmesh.UpdateGatewayRouteInput | *appmesh.DeleteGatewayRouteInput
 }
 
-type describeGatewayRoute struct {
+type DescribeGatewayRoute struct {
 	*App
 }
 
-func (r *describeGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.DescribeGatewayRouteInput, error) {
+func (r *DescribeGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.DescribeGatewayRouteInput, error) {
 	src, err := r.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DescribeGatewayRouteInput{}, err
@@ -52,11 +52,11 @@ func (r *describeGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.D
 	return &input, nil
 }
 
-type createGatewayRoute struct {
+type CreateGatewayRoute struct {
 	*App
 }
 
-func (r *createGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.CreateGatewayRouteInput, error) {
+func (r *CreateGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.CreateGatewayRouteInput, error) {
 	src, err := r.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.CreateGatewayRouteInput{}, err
@@ -88,11 +88,11 @@ func (r *createGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.Cre
 	return &input, nil
 }
 
-type updateGatewayRoute struct {
+type UpdateGatewayRoute struct {
 	*App
 }
 
-func (r *updateGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.UpdateGatewayRouteInput, error) {
+func (r *UpdateGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.UpdateGatewayRouteInput, error) {
 	src, err := r.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.UpdateGatewayRouteInput{}, err
@@ -124,11 +124,11 @@ func (r *updateGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.Upd
 	return &input, nil
 }
 
-type deleteGatewayRoute struct {
+type DeleteGatewayRoute struct {
 	*App
 }
 
-func (r *deleteGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.DeleteGatewayRouteInput, error) {
+func (r *DeleteGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.DeleteGatewayRouteInput, error) {
 	src, err := r.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DeleteGatewayRouteInput{}, err

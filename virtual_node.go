@@ -16,11 +16,11 @@ type VirtualNodeDefinitionInput interface {
 	*appmesh.DescribeVirtualNodeInput | *appmesh.CreateVirtualNodeInput | *appmesh.UpdateVirtualNodeInput | *appmesh.DeleteVirtualNodeInput
 }
 
-type describeVirtualNode struct {
+type DescribeVirtualNode struct {
 	*App
 }
 
-func (v *describeVirtualNode) Load(path string) (*appmesh.DescribeVirtualNodeInput, error) {
+func (v *DescribeVirtualNode) Load(path string) (*appmesh.DescribeVirtualNodeInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DescribeVirtualNodeInput{}, err
@@ -50,11 +50,11 @@ func (v *describeVirtualNode) Load(path string) (*appmesh.DescribeVirtualNodeInp
 	return &input, nil
 }
 
-type createVirtualNode struct {
+type CreateVirtualNode struct {
 	*App
 }
 
-func (v *createVirtualNode) Load(path string) (*appmesh.CreateVirtualNodeInput, error) {
+func (v *CreateVirtualNode) Load(path string) (*appmesh.CreateVirtualNodeInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.CreateVirtualNodeInput{}, err
@@ -88,11 +88,11 @@ func (v *createVirtualNode) Load(path string) (*appmesh.CreateVirtualNodeInput, 
 	return &input, nil
 }
 
-type updateVirtualNode struct {
+type UpdateVirtualNode struct {
 	*App
 }
 
-func (v *updateVirtualNode) Load(path string) (*appmesh.UpdateVirtualNodeInput, error) {
+func (v *UpdateVirtualNode) Load(path string) (*appmesh.UpdateVirtualNodeInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.UpdateVirtualNodeInput{}, err
@@ -122,11 +122,11 @@ func (v *updateVirtualNode) Load(path string) (*appmesh.UpdateVirtualNodeInput, 
 	return &input, nil
 }
 
-type deleteVirtualNode struct {
+type DeleteVirtualNode struct {
 	*App
 }
 
-func (v *deleteVirtualNode) Load(path string) (*appmesh.DeleteVirtualNodeInput, error) {
+func (v *DeleteVirtualNode) Load(path string) (*appmesh.DeleteVirtualNodeInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DeleteVirtualNodeInput{}, err

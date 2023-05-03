@@ -16,11 +16,11 @@ type VirtualServiceDefinitionInput interface {
 	*appmesh.DescribeVirtualServiceInput | *appmesh.CreateVirtualServiceInput | *appmesh.UpdateVirtualServiceInput | *appmesh.DeleteVirtualServiceInput
 }
 
-type describeVirtualService struct {
+type DescribeVirtualService struct {
 	*App
 }
 
-func (v *describeVirtualService) Load(path string) (*appmesh.DescribeVirtualServiceInput, error) {
+func (v *DescribeVirtualService) Load(path string) (*appmesh.DescribeVirtualServiceInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DescribeVirtualServiceInput{}, err
@@ -51,11 +51,11 @@ func (v *describeVirtualService) Load(path string) (*appmesh.DescribeVirtualServ
 	return &input, nil
 }
 
-type createVirtualService struct {
+type CreateVirtualService struct {
 	*App
 }
 
-func (v *createVirtualService) Load(path string) (*appmesh.CreateVirtualServiceInput, error) {
+func (v *CreateVirtualService) Load(path string) (*appmesh.CreateVirtualServiceInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.CreateVirtualServiceInput{}, err
@@ -86,11 +86,11 @@ func (v *createVirtualService) Load(path string) (*appmesh.CreateVirtualServiceI
 	return &input, nil
 }
 
-type updateVirtualService struct {
+type UpdateVirtualService struct {
 	*App
 }
 
-func (v *updateVirtualService) Load(path string) (*appmesh.UpdateVirtualServiceInput, error) {
+func (v *UpdateVirtualService) Load(path string) (*appmesh.UpdateVirtualServiceInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.UpdateVirtualServiceInput{}, err
@@ -121,11 +121,11 @@ func (v *updateVirtualService) Load(path string) (*appmesh.UpdateVirtualServiceI
 	return &input, nil
 }
 
-type deleteVirtualService struct {
+type DeleteVirtualService struct {
 	*App
 }
 
-func (v *deleteVirtualService) Load(path string) (*appmesh.DeleteVirtualServiceInput, error) {
+func (v *DeleteVirtualService) Load(path string) (*appmesh.DeleteVirtualServiceInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DeleteVirtualServiceInput{}, err

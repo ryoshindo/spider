@@ -32,7 +32,7 @@ func (s *App) Destroy(ctx context.Context) error {
 
 func (s *App) DestroyVirtualNode(ctx context.Context) error {
 	for _, virtualNode := range s.config.VirtualNodes {
-		vn := &deleteVirtualNode{s}
+		vn := &DeleteVirtualNode{s}
 		input, err := vn.Load(virtualNode)
 		if err != nil {
 			return err
@@ -49,7 +49,7 @@ func (s *App) DestroyVirtualNode(ctx context.Context) error {
 
 func (s *App) DestroyVirtualRouter(ctx context.Context) error {
 	for _, virtualRouter := range s.config.VirtualRouters {
-		vr := &deleteVirtualRouter{s}
+		vr := &DeleteVirtualRouter{s}
 		input, err := vr.Load(virtualRouter.Path)
 		if err != nil {
 			return err
@@ -68,7 +68,7 @@ func (s *App) DestroyRoute(ctx context.Context) error {
 	for _, virtualRouter := range s.config.VirtualRouters {
 		for _, route := range virtualRouter.Routes {
 			output, _ := s.DescribeRoute(ctx, route, virtualRouter.Path)
-			r := &deleteRoute{s}
+			r := &DeleteRoute{s}
 			input, err := r.Load(route, *output.Route.VirtualRouterName)
 			if err != nil {
 				return err
@@ -86,7 +86,7 @@ func (s *App) DestroyRoute(ctx context.Context) error {
 
 func (s *App) DestroyVirtualService(ctx context.Context) error {
 	for _, virtualService := range s.config.VirtualServices {
-		vs := &deleteVirtualService{s}
+		vs := &DeleteVirtualService{s}
 		input, err := vs.Load(virtualService)
 		if err != nil {
 			return err
@@ -103,7 +103,7 @@ func (s *App) DestroyVirtualService(ctx context.Context) error {
 
 func (s *App) DestroyVirtualGateway(ctx context.Context) error {
 	for _, virtualGateway := range s.config.VirtualGateways {
-		vg := &deleteVirtualGateway{s}
+		vg := &DeleteVirtualGateway{s}
 		input, err := vg.Load(virtualGateway.Path)
 		if err != nil {
 			return err
@@ -122,7 +122,7 @@ func (s *App) DestroyGatewayRoute(ctx context.Context) error {
 	for _, virtualGateway := range s.config.VirtualGateways {
 		for _, gatewayRoute := range virtualGateway.GatewayRoutes {
 			output, _ := s.DescribeGatewayRoute(ctx, gatewayRoute, virtualGateway.Path)
-			gr := &deleteGatewayRoute{s}
+			gr := &DeleteGatewayRoute{s}
 			input, err := gr.Load(gatewayRoute, *output.GatewayRoute.VirtualGatewayName)
 			if err != nil {
 				return err

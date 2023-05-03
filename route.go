@@ -16,11 +16,11 @@ type RouteDefinitionInput interface {
 	*appmesh.DescribeRouteInput | *appmesh.CreateRouteInput | *appmesh.UpdateRouteInput | *appmesh.DeleteRouteInput
 }
 
-type describeRoute struct {
+type DescribeRoute struct {
 	*App
 }
 
-func (r *describeRoute) Load(path, virtualRouterName string) (*appmesh.DescribeRouteInput, error) {
+func (r *DescribeRoute) Load(path, virtualRouterName string) (*appmesh.DescribeRouteInput, error) {
 	src, err := r.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DescribeRouteInput{}, err
@@ -52,11 +52,11 @@ func (r *describeRoute) Load(path, virtualRouterName string) (*appmesh.DescribeR
 	return &input, nil
 }
 
-type createRoute struct {
+type CreateRoute struct {
 	*App
 }
 
-func (r *createRoute) Load(path, virtualRouterName string) (*appmesh.CreateRouteInput, error) {
+func (r *CreateRoute) Load(path, virtualRouterName string) (*appmesh.CreateRouteInput, error) {
 	src, err := r.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.CreateRouteInput{}, err
@@ -88,11 +88,11 @@ func (r *createRoute) Load(path, virtualRouterName string) (*appmesh.CreateRoute
 	return &input, nil
 }
 
-type updateRoute struct {
+type UpdateRoute struct {
 	*App
 }
 
-func (r *updateRoute) Load(path, virtualRouterName string) (*appmesh.UpdateRouteInput, error) {
+func (r *UpdateRoute) Load(path, virtualRouterName string) (*appmesh.UpdateRouteInput, error) {
 	src, err := r.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.UpdateRouteInput{}, err
@@ -124,11 +124,11 @@ func (r *updateRoute) Load(path, virtualRouterName string) (*appmesh.UpdateRoute
 	return &input, nil
 }
 
-type deleteRoute struct {
+type DeleteRoute struct {
 	*App
 }
 
-func (r *deleteRoute) Load(path, virtualRouterName string) (*appmesh.DeleteRouteInput, error) {
+func (r *DeleteRoute) Load(path, virtualRouterName string) (*appmesh.DeleteRouteInput, error) {
 	src, err := r.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DeleteRouteInput{}, err

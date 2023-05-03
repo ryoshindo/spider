@@ -8,7 +8,7 @@ import (
 )
 
 func (s *App) DescribeVirtualNode(ctx context.Context, path string) (*appmesh.DescribeVirtualNodeOutput, error) {
-	vn := &describeVirtualNode{s}
+	vn := &DescribeVirtualNode{s}
 	input, err := vn.Load(path)
 	if err != nil {
 		return &appmesh.DescribeVirtualNodeOutput{}, err
@@ -23,7 +23,7 @@ func (s *App) DescribeVirtualNode(ctx context.Context, path string) (*appmesh.De
 }
 
 func (s *App) DescribeVirtualRouter(ctx context.Context, path string) (*appmesh.DescribeVirtualRouterOutput, error) {
-	vr := &describeVirtualRouter{s}
+	vr := &DescribeVirtualRouter{s}
 	input, err := vr.Load(path)
 	if err != nil {
 		return &appmesh.DescribeVirtualRouterOutput{}, err
@@ -43,7 +43,7 @@ func (s *App) DescribeRoute(ctx context.Context, path, virtualRouterPath string)
 		return &appmesh.DescribeRouteOutput{}, err
 	}
 
-	r := &describeRoute{s}
+	r := &DescribeRoute{s}
 	input, err := r.Load(path, *vrOutput.VirtualRouter.VirtualRouterName)
 	if err != nil {
 		return &appmesh.DescribeRouteOutput{}, err
@@ -62,7 +62,7 @@ func (s *App) DescribeRoute(ctx context.Context, path, virtualRouterPath string)
 }
 
 func (s *App) DescribeVirtualService(ctx context.Context, path string) (*appmesh.DescribeVirtualServiceOutput, error) {
-	vs := &describeVirtualService{s}
+	vs := &DescribeVirtualService{s}
 	input, err := vs.Load(path)
 	if err != nil {
 		return &appmesh.DescribeVirtualServiceOutput{}, err
@@ -77,7 +77,7 @@ func (s *App) DescribeVirtualService(ctx context.Context, path string) (*appmesh
 }
 
 func (s *App) DescribeVirtualGateway(ctx context.Context, path string) (*appmesh.DescribeVirtualGatewayOutput, error) {
-	vg := &describeVirtualGateway{s}
+	vg := &DescribeVirtualGateway{s}
 	input, err := vg.Load(path)
 	if err != nil {
 		return &appmesh.DescribeVirtualGatewayOutput{}, err
@@ -97,7 +97,7 @@ func (s *App) DescribeGatewayRoute(ctx context.Context, path, virtualGatewayPath
 		return &appmesh.DescribeGatewayRouteOutput{}, err
 	}
 
-	gr := &describeGatewayRoute{s}
+	gr := &DescribeGatewayRoute{s}
 	input, err := gr.Load(path, *vgOutput.VirtualGateway.VirtualGatewayName)
 	if err != nil {
 		return &appmesh.DescribeGatewayRouteOutput{}, err

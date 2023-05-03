@@ -36,7 +36,7 @@ func (s *App) ApplyVirtualNode(ctx context.Context) error {
 	for _, virtualNode := range s.config.VirtualNodes {
 		output, _ := s.DescribeVirtualNode(ctx, virtualNode)
 		if output.VirtualNode == nil {
-			vn := &createVirtualNode{s}
+			vn := &CreateVirtualNode{s}
 			input, err := vn.Load(virtualNode)
 
 			_, err = s.appmesh.CreateVirtualNode(ctx, input)
@@ -44,7 +44,7 @@ func (s *App) ApplyVirtualNode(ctx context.Context) error {
 				return err
 			}
 		} else {
-			vn := &updateVirtualNode{s}
+			vn := &UpdateVirtualNode{s}
 			input, err := vn.Load(virtualNode)
 
 			_, err = s.appmesh.UpdateVirtualNode(ctx, input)
@@ -61,7 +61,7 @@ func (s *App) ApplyVirtualRouter(ctx context.Context) error {
 	for _, virtualRouter := range s.config.VirtualRouters {
 		output, _ := s.DescribeVirtualRouter(ctx, virtualRouter.Path)
 		if output.VirtualRouter == nil {
-			vr := &createVirtualRouter{s}
+			vr := &CreateVirtualRouter{s}
 			input, err := vr.Load(virtualRouter.Path)
 
 			_, err = s.appmesh.CreateVirtualRouter(ctx, input)
@@ -69,7 +69,7 @@ func (s *App) ApplyVirtualRouter(ctx context.Context) error {
 				return err
 			}
 		} else {
-			vr := &updateVirtualRouter{s}
+			vr := &UpdateVirtualRouter{s}
 			input, err := vr.Load(virtualRouter.Path)
 
 			_, err = s.appmesh.UpdateVirtualRouter(ctx, input)
@@ -87,7 +87,7 @@ func (s *App) ApplyRoute(ctx context.Context) error {
 		for _, route := range virtualRouter.Routes {
 			output, _ := s.DescribeRoute(ctx, route, virtualRouter.Path)
 			if output.Route.Spec == nil {
-				r := &createRoute{s}
+				r := &CreateRoute{s}
 				input, err := r.Load(route, *output.Route.VirtualRouterName)
 
 				_, err = s.appmesh.CreateRoute(ctx, input)
@@ -95,7 +95,7 @@ func (s *App) ApplyRoute(ctx context.Context) error {
 					return err
 				}
 			} else {
-				r := &updateRoute{s}
+				r := &UpdateRoute{s}
 				input, err := r.Load(route, *output.Route.VirtualRouterName)
 
 				_, err = s.appmesh.UpdateRoute(ctx, input)
@@ -113,7 +113,7 @@ func (s *App) ApplyVirtualService(ctx context.Context) error {
 	for _, virtualService := range s.config.VirtualServices {
 		output, _ := s.DescribeVirtualService(ctx, virtualService)
 		if output.VirtualService == nil {
-			vs := &createVirtualService{s}
+			vs := &CreateVirtualService{s}
 			input, err := vs.Load(virtualService)
 
 			_, err = s.appmesh.CreateVirtualService(ctx, input)
@@ -121,7 +121,7 @@ func (s *App) ApplyVirtualService(ctx context.Context) error {
 				return err
 			}
 		} else {
-			vs := &updateVirtualService{s}
+			vs := &UpdateVirtualService{s}
 			input, err := vs.Load(virtualService)
 
 			_, err = s.appmesh.UpdateVirtualService(ctx, input)
@@ -138,7 +138,7 @@ func (s *App) ApplyVirtualGateway(ctx context.Context) error {
 	for _, virtualGateway := range s.config.VirtualGateways {
 		output, _ := s.DescribeVirtualGateway(ctx, virtualGateway.Path)
 		if output.VirtualGateway == nil {
-			vg := &createVirtualGateway{s}
+			vg := &CreateVirtualGateway{s}
 			input, err := vg.Load(virtualGateway.Path)
 
 			_, err = s.appmesh.CreateVirtualGateway(ctx, input)
@@ -146,7 +146,7 @@ func (s *App) ApplyVirtualGateway(ctx context.Context) error {
 				return err
 			}
 		} else {
-			vg := &updateVirtualGateway{s}
+			vg := &UpdateVirtualGateway{s}
 			input, err := vg.Load(virtualGateway.Path)
 
 			_, err = s.appmesh.UpdateVirtualGateway(ctx, input)
@@ -164,7 +164,7 @@ func (s *App) ApplyGatewayRoute(ctx context.Context) error {
 		for _, gatewayRoute := range virtualGateway.GatewayRoutes {
 			output, _ := s.DescribeGatewayRoute(ctx, gatewayRoute, virtualGateway.Path)
 			if output.GatewayRoute.Spec == nil {
-				gr := &createGatewayRoute{s}
+				gr := &CreateGatewayRoute{s}
 				input, err := gr.Load(gatewayRoute, *output.GatewayRoute.VirtualGatewayName)
 
 				_, err = s.appmesh.CreateGatewayRoute(ctx, input)
@@ -172,7 +172,7 @@ func (s *App) ApplyGatewayRoute(ctx context.Context) error {
 					return err
 				}
 			} else {
-				gr := &updateGatewayRoute{s}
+				gr := &UpdateGatewayRoute{s}
 				input, err := gr.Load(gatewayRoute, *output.GatewayRoute.VirtualGatewayName)
 
 				_, err = s.appmesh.UpdateGatewayRoute(ctx, input)

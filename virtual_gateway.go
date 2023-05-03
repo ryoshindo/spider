@@ -16,11 +16,11 @@ type VirtualGatewayDefinitionInput interface {
 	*appmesh.DescribeVirtualGatewayInput | *appmesh.CreateVirtualGatewayInput | *appmesh.UpdateVirtualGatewayInput | *appmesh.DeleteVirtualGatewayInput
 }
 
-type describeVirtualGateway struct {
+type DescribeVirtualGateway struct {
 	*App
 }
 
-func (v *describeVirtualGateway) Load(path string) (*appmesh.DescribeVirtualGatewayInput, error) {
+func (v *DescribeVirtualGateway) Load(path string) (*appmesh.DescribeVirtualGatewayInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DescribeVirtualGatewayInput{}, err
@@ -51,11 +51,11 @@ func (v *describeVirtualGateway) Load(path string) (*appmesh.DescribeVirtualGate
 	return &input, nil
 }
 
-type createVirtualGateway struct {
+type CreateVirtualGateway struct {
 	*App
 }
 
-func (v *createVirtualGateway) Load(path string) (*appmesh.CreateVirtualGatewayInput, error) {
+func (v *CreateVirtualGateway) Load(path string) (*appmesh.CreateVirtualGatewayInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.CreateVirtualGatewayInput{}, err
@@ -86,11 +86,11 @@ func (v *createVirtualGateway) Load(path string) (*appmesh.CreateVirtualGatewayI
 	return &input, nil
 }
 
-type updateVirtualGateway struct {
+type UpdateVirtualGateway struct {
 	*App
 }
 
-func (v *updateVirtualGateway) Load(path string) (*appmesh.UpdateVirtualGatewayInput, error) {
+func (v *UpdateVirtualGateway) Load(path string) (*appmesh.UpdateVirtualGatewayInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.UpdateVirtualGatewayInput{}, err
@@ -121,11 +121,11 @@ func (v *updateVirtualGateway) Load(path string) (*appmesh.UpdateVirtualGatewayI
 	return &input, nil
 }
 
-type deleteVirtualGateway struct {
+type DeleteVirtualGateway struct {
 	*App
 }
 
-func (v *deleteVirtualGateway) Load(path string) (*appmesh.DeleteVirtualGatewayInput, error) {
+func (v *DeleteVirtualGateway) Load(path string) (*appmesh.DeleteVirtualGatewayInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DeleteVirtualGatewayInput{}, err

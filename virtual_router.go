@@ -16,11 +16,11 @@ type VirtualRouterDefinitionInput interface {
 	*appmesh.DescribeVirtualRouterInput | *appmesh.CreateVirtualRouterInput | *appmesh.UpdateVirtualRouterInput | *appmesh.DeleteVirtualRouterInput
 }
 
-type describeVirtualRouter struct {
+type DescribeVirtualRouter struct {
 	*App
 }
 
-func (v *describeVirtualRouter) Load(path string) (*appmesh.DescribeVirtualRouterInput, error) {
+func (v *DescribeVirtualRouter) Load(path string) (*appmesh.DescribeVirtualRouterInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DescribeVirtualRouterInput{}, err
@@ -50,11 +50,11 @@ func (v *describeVirtualRouter) Load(path string) (*appmesh.DescribeVirtualRoute
 	return &input, nil
 }
 
-type createVirtualRouter struct {
+type CreateVirtualRouter struct {
 	*App
 }
 
-func (v *createVirtualRouter) Load(path string) (*appmesh.CreateVirtualRouterInput, error) {
+func (v *CreateVirtualRouter) Load(path string) (*appmesh.CreateVirtualRouterInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.CreateVirtualRouterInput{}, err
@@ -85,11 +85,11 @@ func (v *createVirtualRouter) Load(path string) (*appmesh.CreateVirtualRouterInp
 	return &input, nil
 }
 
-type updateVirtualRouter struct {
+type UpdateVirtualRouter struct {
 	*App
 }
 
-func (v *updateVirtualRouter) Load(path string) (*appmesh.UpdateVirtualRouterInput, error) {
+func (v *UpdateVirtualRouter) Load(path string) (*appmesh.UpdateVirtualRouterInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.UpdateVirtualRouterInput{}, err
@@ -120,11 +120,11 @@ func (v *updateVirtualRouter) Load(path string) (*appmesh.UpdateVirtualRouterInp
 	return &input, nil
 }
 
-type deleteVirtualRouter struct {
+type DeleteVirtualRouter struct {
 	*App
 }
 
-func (v *deleteVirtualRouter) Load(path string) (*appmesh.DeleteVirtualRouterInput, error) {
+func (v *DeleteVirtualRouter) Load(path string) (*appmesh.DeleteVirtualRouterInput, error) {
 	src, err := v.readDefinitionFile(path)
 	if err != nil {
 		return &appmesh.DeleteVirtualRouterInput{}, err
