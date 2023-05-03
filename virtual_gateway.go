@@ -13,7 +13,7 @@ type VirtualGatewayDefinition[T VirtualGatewayDefinitionInput] interface {
 }
 
 type VirtualGatewayDefinitionInput interface {
-	*appmesh.DescribeVirtualGatewayInput | *appmesh.CreateVirtualGatewayInput | *appmesh.UpdateVirtualGatewayInput
+	*appmesh.DescribeVirtualGatewayInput | *appmesh.CreateVirtualGatewayInput | *appmesh.UpdateVirtualGatewayInput | *appmesh.DeleteVirtualGatewayInput
 }
 
 type describeVirtualGateway struct {
@@ -116,6 +116,41 @@ func (v *updateVirtualGateway) Load(path string) (*appmesh.UpdateVirtualGatewayI
 
 	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
 		return &appmesh.UpdateVirtualGatewayInput{}, err
+	}
+
+	return &input, nil
+}
+
+type deleteVirtualGateway struct {
+	*App
+}
+
+func (v *deleteVirtualGateway) Load(path string) (*appmesh.DeleteVirtualGatewayInput, error) {
+	src, err := v.readDefinitionFile(path)
+	if err != nil {
+		return &appmesh.DeleteVirtualGatewayInput{}, err
+	}
+
+	c := struct {
+		VirtualGatewayDefinition json.RawMessage `json:"virtualGatewayDefinition"`
+	}{}
+
+	dec := json.NewDecoder(bytes.NewReader(src))
+	if err := dec.Decode(&c); err != nil {
+		return &appmesh.DeleteVirtualGatewayInput{}, err
+	}
+
+	if c.VirtualGatewayDefinition != nil {
+		src = c.VirtualGatewayDefinition
+	}
+
+	input := appmesh.DeleteVirtualGatewayInput{
+		MeshName:  aws.String(v.config.Mesh.Name),
+		MeshOwner: aws.String(v.config.Mesh.Owner),
+	}
+
+	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
+		return &appmesh.DeleteVirtualGatewayInput{}, err
 	}
 
 	return &input, nil

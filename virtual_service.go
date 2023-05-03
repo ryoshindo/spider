@@ -13,7 +13,7 @@ type VirtualServiceDefinition[T VirtualServiceDefinitionInput] interface {
 }
 
 type VirtualServiceDefinitionInput interface {
-	*appmesh.DescribeVirtualServiceInput | *appmesh.CreateVirtualServiceInput | *appmesh.UpdateVirtualServiceInput
+	*appmesh.DescribeVirtualServiceInput | *appmesh.CreateVirtualServiceInput | *appmesh.UpdateVirtualServiceInput | *appmesh.DeleteVirtualServiceInput
 }
 
 type describeVirtualService struct {
@@ -116,6 +116,41 @@ func (v *updateVirtualService) Load(path string) (*appmesh.UpdateVirtualServiceI
 
 	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
 		return &appmesh.UpdateVirtualServiceInput{}, err
+	}
+
+	return &input, nil
+}
+
+type deleteVirtualService struct {
+	*App
+}
+
+func (v *deleteVirtualService) Load(path string) (*appmesh.DeleteVirtualServiceInput, error) {
+	src, err := v.readDefinitionFile(path)
+	if err != nil {
+		return &appmesh.DeleteVirtualServiceInput{}, err
+	}
+
+	c := struct {
+		VirtualServiceDefinition json.RawMessage `json:"virtualServiceDefinition"`
+	}{}
+
+	dec := json.NewDecoder(bytes.NewReader(src))
+	if err := dec.Decode(&c); err != nil {
+		return &appmesh.DeleteVirtualServiceInput{}, err
+	}
+
+	if c.VirtualServiceDefinition != nil {
+		src = c.VirtualServiceDefinition
+	}
+
+	input := appmesh.DeleteVirtualServiceInput{
+		MeshName:  aws.String(v.config.Mesh.Name),
+		MeshOwner: aws.String(v.config.Mesh.Owner),
+	}
+
+	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
+		return &appmesh.DeleteVirtualServiceInput{}, err
 	}
 
 	return &input, nil

@@ -13,7 +13,7 @@ type VirtualRouterDefinition[T VirtualRouterDefinitionInput] interface {
 }
 
 type VirtualRouterDefinitionInput interface {
-	*appmesh.DescribeVirtualRouterInput | *appmesh.CreateVirtualRouterInput | *appmesh.UpdateVirtualRouterInput
+	*appmesh.DescribeVirtualRouterInput | *appmesh.CreateVirtualRouterInput | *appmesh.UpdateVirtualRouterInput | *appmesh.DeleteVirtualRouterInput
 }
 
 type describeVirtualRouter struct {
@@ -115,6 +115,41 @@ func (v *updateVirtualRouter) Load(path string) (*appmesh.UpdateVirtualRouterInp
 
 	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
 		return &appmesh.UpdateVirtualRouterInput{}, err
+	}
+
+	return &input, nil
+}
+
+type deleteVirtualRouter struct {
+	*App
+}
+
+func (v *deleteVirtualRouter) Load(path string) (*appmesh.DeleteVirtualRouterInput, error) {
+	src, err := v.readDefinitionFile(path)
+	if err != nil {
+		return &appmesh.DeleteVirtualRouterInput{}, err
+	}
+
+	c := struct {
+		VirtualRouterDefinition json.RawMessage `json:"virtualRouterDefinition"`
+	}{}
+
+	dec := json.NewDecoder(bytes.NewReader(src))
+	if err := dec.Decode(&c); err != nil {
+		return &appmesh.DeleteVirtualRouterInput{}, err
+	}
+
+	if c.VirtualRouterDefinition != nil {
+		src = c.VirtualRouterDefinition
+	}
+
+	input := appmesh.DeleteVirtualRouterInput{
+		MeshName:  aws.String(v.config.Mesh.Name),
+		MeshOwner: aws.String(v.config.Mesh.Owner),
+	}
+
+	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
+		return &appmesh.DeleteVirtualRouterInput{}, err
 	}
 
 	return &input, nil

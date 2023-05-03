@@ -13,7 +13,7 @@ type RouteDefinition[T RouteDefinitionInput] interface {
 }
 
 type RouteDefinitionInput interface {
-	*appmesh.DescribeRouteInput | *appmesh.CreateRouteInput | *appmesh.UpdateRouteInput
+	*appmesh.DescribeRouteInput | *appmesh.CreateRouteInput | *appmesh.UpdateRouteInput | *appmesh.DeleteRouteInput
 }
 
 type describeRoute struct {
@@ -119,6 +119,42 @@ func (r *updateRoute) Load(path, virtualRouterName string) (*appmesh.UpdateRoute
 
 	if err := r.UnmarshalJsonForStruct(src, &input, path); err != nil {
 		return &appmesh.UpdateRouteInput{}, err
+	}
+
+	return &input, nil
+}
+
+type deleteRoute struct {
+	*App
+}
+
+func (r *deleteRoute) Load(path, virtualRouterName string) (*appmesh.DeleteRouteInput, error) {
+	src, err := r.readDefinitionFile(path)
+	if err != nil {
+		return &appmesh.DeleteRouteInput{}, err
+	}
+
+	c := struct {
+		RouteDefinition json.RawMessage `json:"routeDefinition"`
+	}{}
+
+	dec := json.NewDecoder(bytes.NewReader(src))
+	if err := dec.Decode(&c); err != nil {
+		return &appmesh.DeleteRouteInput{}, err
+	}
+
+	if c.RouteDefinition != nil {
+		src = c.RouteDefinition
+	}
+
+	input := appmesh.DeleteRouteInput{
+		MeshName:          aws.String(r.config.Mesh.Name),
+		MeshOwner:         aws.String(r.config.Mesh.Owner),
+		VirtualRouterName: &virtualRouterName,
+	}
+
+	if err := r.UnmarshalJsonForStruct(src, &input, path); err != nil {
+		return &appmesh.DeleteRouteInput{}, err
 	}
 
 	return &input, nil

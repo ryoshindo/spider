@@ -13,7 +13,7 @@ type GatewayRouteDefinition[T RouteDefinitionInput] interface {
 }
 
 type GatewayRouteDefinitionInput interface {
-	*appmesh.DescribeGatewayRouteInput | *appmesh.CreateGatewayRouteInput | *appmesh.UpdateGatewayRouteInput
+	*appmesh.DescribeGatewayRouteInput | *appmesh.CreateGatewayRouteInput | *appmesh.UpdateGatewayRouteInput | *appmesh.DeleteGatewayRouteInput
 }
 
 type describeGatewayRoute struct {
@@ -119,6 +119,42 @@ func (r *updateGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.Upd
 
 	if err := r.UnmarshalJsonForStruct(src, &input, path); err != nil {
 		return &appmesh.UpdateGatewayRouteInput{}, err
+	}
+
+	return &input, nil
+}
+
+type deleteGatewayRoute struct {
+	*App
+}
+
+func (r *deleteGatewayRoute) Load(path, virtualGatewayName string) (*appmesh.DeleteGatewayRouteInput, error) {
+	src, err := r.readDefinitionFile(path)
+	if err != nil {
+		return &appmesh.DeleteGatewayRouteInput{}, err
+	}
+
+	c := struct {
+		GatewayRouteDefinition json.RawMessage `json:"gatewayRouteDefinition"`
+	}{}
+
+	dec := json.NewDecoder(bytes.NewReader(src))
+	if err := dec.Decode(&c); err != nil {
+		return &appmesh.DeleteGatewayRouteInput{}, err
+	}
+
+	if c.GatewayRouteDefinition != nil {
+		src = c.GatewayRouteDefinition
+	}
+
+	input := appmesh.DeleteGatewayRouteInput{
+		MeshName:           aws.String(r.config.Mesh.Name),
+		MeshOwner:          aws.String(r.config.Mesh.Owner),
+		VirtualGatewayName: &virtualGatewayName,
+	}
+
+	if err := r.UnmarshalJsonForStruct(src, &input, path); err != nil {
+		return &appmesh.DeleteGatewayRouteInput{}, err
 	}
 
 	return &input, nil

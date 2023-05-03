@@ -13,7 +13,7 @@ type VirtualNodeDefinition[T VirtualNodeDefinitionInput] interface {
 }
 
 type VirtualNodeDefinitionInput interface {
-	*appmesh.DescribeVirtualNodeInput | *appmesh.CreateVirtualNodeInput | *appmesh.UpdateVirtualNodeInput
+	*appmesh.DescribeVirtualNodeInput | *appmesh.CreateVirtualNodeInput | *appmesh.UpdateVirtualNodeInput | *appmesh.DeleteVirtualNodeInput
 }
 
 type describeVirtualNode struct {
@@ -117,6 +117,41 @@ func (v *updateVirtualNode) Load(path string) (*appmesh.UpdateVirtualNodeInput, 
 	}
 	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
 		return &appmesh.UpdateVirtualNodeInput{}, err
+	}
+
+	return &input, nil
+}
+
+type deleteVirtualNode struct {
+	*App
+}
+
+func (v *deleteVirtualNode) Load(path string) (*appmesh.DeleteVirtualNodeInput, error) {
+	src, err := v.readDefinitionFile(path)
+	if err != nil {
+		return &appmesh.DeleteVirtualNodeInput{}, err
+	}
+
+	c := struct {
+		VirtualNodeDefinition json.RawMessage `json:"virtualNodeDefinition"`
+	}{}
+
+	dec := json.NewDecoder(bytes.NewReader(src))
+	if err := dec.Decode(&c); err != nil {
+		return &appmesh.DeleteVirtualNodeInput{}, err
+	}
+
+	if c.VirtualNodeDefinition != nil {
+		src = c.VirtualNodeDefinition
+	}
+
+	input := appmesh.DeleteVirtualNodeInput{
+		MeshName:  aws.String(v.config.Mesh.Name),
+		MeshOwner: aws.String(v.config.Mesh.Owner),
+	}
+
+	if err := v.UnmarshalJsonForStruct(src, &input, path); err != nil {
+		return &appmesh.DeleteVirtualNodeInput{}, err
 	}
 
 	return &input, nil
