@@ -29,12 +29,12 @@ type Config struct {
 	} `yaml:"mesh"`
 	VirtualNodes   []string `yaml:"virtual_nodes"`
 	VirtualRouters []struct {
-		Definition string   `yaml:"definition"`
-		Routes     []string `yaml:"routes"`
+		Path   string   `yaml:"path"`
+		Routes []string `yaml:"routes"`
 	} `yaml:"virtual_routers"`
 	VirtualServices []string `yaml:"virtual_services"`
 	VirtualGateways []struct {
-		Definition    string   `yaml:"definition"`
+		Path          string   `yaml:"path"`
 		GatewayRoutes []string `yaml:"gateway_routes"`
 	} `yaml:"virtual_gateways"`
 
