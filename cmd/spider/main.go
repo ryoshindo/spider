@@ -21,7 +21,11 @@ func main() {
 		panic(err)
 	}
 
-	if err := app.Apply(ctx); err != nil {
+	// if err := app.Apply(ctx); err != nil {
+	// 	panic(err)
+	// }
+
+	if err := app.Destroy(ctx); err != nil {
 		panic(err)
 	}
 }
