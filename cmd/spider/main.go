@@ -22,6 +22,6 @@ func main() {
 	}
 
 	if err := app.Deploy(ctx); err != nil {
-		// panic(err)
+		panic(err)
 	}
 }

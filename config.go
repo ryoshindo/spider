@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/goccy/go-yaml"
+	goConfig "github.com/kayac/go-config"
 )
 
 var (
@@ -32,6 +33,7 @@ type Config struct {
 }
 
 type configLoader struct {
+	*goConfig.Loader
 }
 
 func newConfigLoader() *configLoader {
@@ -76,6 +78,15 @@ func (c *Config) AssumeRole(assumeRoleArn string) {
 func (c *Config) Restrict(ctx context.Context) error {
 	if c.Region == "" {
 		c.awsConfig.Region = os.Getenv("AWS_REGION")
+	}
+
+	if c.Mesh.Owner == "" {
+		stsClient := sts.NewFromConfig(c.awsConfig)
+		identity, err := stsClient.GetCallerIdentity(ctx, &sts.GetCallerIdentityInput{})
+		if err != nil {
+			return fmt.Errorf("failed to get caller identity: %w", err)
+		}
+		c.Mesh.Owner = aws.ToString(identity.Account)
 	}
 
 	var err error
