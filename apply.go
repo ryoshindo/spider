@@ -24,6 +24,10 @@ func (s *App) Describe(ctx context.Context) error {
 		return err
 	}
 
+	if _, err := s.DescribeVirtualGateway(ctx); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -96,6 +100,21 @@ func (s *App) DescribeVirtualService(ctx context.Context) (*appmesh.DescribeVirt
 	return output, nil
 }
 
+func (s *App) DescribeVirtualGateway(ctx context.Context) (*appmesh.DescribeVirtualGatewayOutput, error) {
+	vg := &describeVirtualGateway{s}
+	input, err := vg.Load(s.config.VirtualGateways[0]) // FIXME: Allow for multiple file support
+	if err != nil {
+		return &appmesh.DescribeVirtualGatewayOutput{}, err
+	}
+
+	output, err := s.appmesh.DescribeVirtualGateway(ctx, input)
+	if err != nil {
+		return &appmesh.DescribeVirtualGatewayOutput{}, err
+	}
+
+	return output, nil
+}
+
 func (s *App) Apply(ctx context.Context) error {
 	if err := s.ApplyVirtualNode(ctx); err != nil {
 		return err
@@ -110,6 +129,10 @@ func (s *App) Apply(ctx context.Context) error {
 	}
 
 	if err := s.ApplyVirtualService(ctx); err != nil {
+		return err
+	}
+
+	if err := s.ApplyVirtualGateway(ctx); err != nil {
 		return err
 	}
 
@@ -200,6 +223,29 @@ func (s *App) ApplyVirtualService(ctx context.Context) error {
 		input, err := r.Load(s.config.VirtualServices[0]) // FIXME: Allow for multiple file support
 
 		_, err = s.appmesh.UpdateVirtualService(ctx, input)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *App) ApplyVirtualGateway(ctx context.Context) error {
+	output, _ := s.DescribeVirtualGateway(ctx)
+	if output.VirtualGateway == nil {
+		r := &createVirtualGateway{s}
+		input, err := r.Load(s.config.VirtualGateways[0]) // FIXME: Allow for multiple file support
+
+		_, err = s.appmesh.CreateVirtualGateway(ctx, input)
+		if err != nil {
+			return err
+		}
+	} else {
+		r := &updateVirtualGateway{s}
+		input, err := r.Load(s.config.VirtualGateways[0]) // FIXME: Allow for multiple file support
+
+		_, err = s.appmesh.UpdateVirtualGateway(ctx, input)
 		if err != nil {
 			return err
 		}

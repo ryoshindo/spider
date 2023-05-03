@@ -33,6 +33,7 @@ type Config struct {
 		Routes     []string `yaml:"routes"`
 	} `yaml:"virtual_routers"`
 	VirtualServices []string `yaml:"virtual_services"`
+	VirtualGateways []string `yaml:"virtual_gateways"`
 
 	awsConfig aws.Config
 }
