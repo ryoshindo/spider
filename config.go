@@ -27,15 +27,25 @@ type Config struct {
 		Name  string `yaml:"name"`
 		Owner string `yaml:"owner"`
 	} `yaml:"mesh"`
-	VirtualNodes   []string `yaml:"virtual_nodes"`
+	VirtualNodes []struct {
+		Path string `yaml:"path"`
+	} `yaml:"virtual_nodes"`
 	VirtualRouters []struct {
-		Path   string   `yaml:"path"`
-		Routes []string `yaml:"routes"`
+		Path   string `yaml:"path"`
+		Routes []struct {
+			Path string `yaml:"path"`
+		} `yaml:"routes"`
+		Name string
 	} `yaml:"virtual_routers"`
-	VirtualServices []string `yaml:"virtual_services"`
+	VirtualServices []struct {
+		Path string `yaml:"path"`
+	} `yaml:"virtual_services"`
 	VirtualGateways []struct {
-		Path          string   `yaml:"path"`
-		GatewayRoutes []string `yaml:"gateway_routes"`
+		Path          string `yaml:"path"`
+		GatewayRoutes []struct {
+			Path string `yaml:"path"`
+		} `yaml:"gateway_routes"`
+		Name string
 	} `yaml:"virtual_gateways"`
 
 	awsConfig aws.Config
