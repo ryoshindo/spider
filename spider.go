@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/service/appmesh"
@@ -15,6 +16,7 @@ type App struct {
 
 	config *Config
 	loader *configLoader
+	logger *log.Logger
 }
 
 func New(ctx context.Context, opt *Option) (*App, error) {
@@ -31,6 +33,7 @@ func New(ctx context.Context, opt *Option) (*App, error) {
 
 		config: conf,
 		loader: loader,
+		logger: newLogger(),
 	}, nil
 }
 

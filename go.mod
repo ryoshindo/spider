@@ -8,9 +8,11 @@ require (
 	github.com/aws/aws-sdk-go-v2/credentials v1.13.19
 	github.com/aws/aws-sdk-go-v2/service/appmesh v1.17.7
 	github.com/aws/aws-sdk-go-v2/service/sts v1.18.8
+	github.com/fatih/color v1.15.0
 	github.com/goccy/go-yaml v1.11.0
 	github.com/kayac/go-config v0.6.0
 	github.com/stretchr/testify v1.8.2
+	golang.org/x/exp v0.0.0-20230425010034-47ecfdc1ba53
 )
 
 require (
@@ -24,7 +26,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.14.7 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fatih/color v1.15.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
