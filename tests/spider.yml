@@ -3,14 +3,14 @@ mesh:
   name: main-mesh
   owner: 123456789012
 virtual_nodes:
-  - ./virtual_node.json
+  - path: ./virtual_node.json
 virtual_routers:
   - path: ./virtual_router.json
     routes:
-      - ./route.json
+      - path: ./route.json
 virtual_services:
-  - ./virtual_service.json
+  - path: ./virtual_service.json
 virtual_gateways:
   - path: ./virtual_gateway.json
     gateway_routes:
-      - ./gateway_route.json
+      - path: ./gateway_route.json
