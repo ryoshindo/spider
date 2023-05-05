@@ -26,7 +26,7 @@ func New(ctx context.Context, opt *Option) (*App, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to load config: %w", err)
 	}
-	conf.AssumeRole(assumeRoleArn) // FIXME
+	// conf.AssumeRole(assumeRoleArn) // FIXME
 
 	return &App{
 		appmesh: appmesh.NewFromConfig(conf.awsConfig),

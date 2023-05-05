@@ -1,8 +1,10 @@
 package spider
 
-import "io/ioutil"
+import (
+	"os"
+)
 
 func (s *App) readDefinitionFile(path string) ([]byte, error) {
 	// return s.loader.ReadWithEnv(path)
-	return ioutil.ReadFile(path)
+	return os.ReadFile(path)
 }
