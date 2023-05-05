@@ -90,10 +90,7 @@ func walkMap(m map[string]interface{}, fn func(string) string) {
 
 		switch value := value.(type) {
 		case map[string]interface{}:
-			switch strings.ToLower(key) {
-			default:
-				walkMap(value, fn)
-			}
+			walkMap(value, fn)
 		case []interface{}:
 			if len(value) > 0 {
 				walkArray(value, fn)

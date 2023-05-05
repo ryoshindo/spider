@@ -3,7 +3,7 @@ package spider
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -12,13 +12,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sts"
 	"github.com/goccy/go-yaml"
 	goConfig "github.com/kayac/go-config"
-)
-
-var (
-	appmeshName     = "main"           // FIXME
-	virtualNodeName = "main-test"      // FIXME
-	region          = "ap-northeast-1" // FIXME
-	assumeRoleArn   = ""               // FIXME
 )
 
 type Config struct {
@@ -68,7 +61,7 @@ func (l *configLoader) Load(ctx context.Context, path string) (*Config, error) {
 	}
 	defer file.Close()
 
-	content, err := ioutil.ReadAll(file)
+	content, err := io.ReadAll(file)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read config file: %w", err)
 	}
