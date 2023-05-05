@@ -7,7 +7,9 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (s *App) Apply(ctx context.Context) error {
+type ApplyOption struct{}
+
+func (s *App) Apply(ctx context.Context, _ ApplyOption) error {
 	s.Log(slog.LevelInfo, "Applying AppMesh resources...")
 
 	if err := s.ApplyVirtualNode(ctx); err != nil {

@@ -26,7 +26,7 @@ func New(ctx context.Context, opt *Option) (*App, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to load config: %w", err)
 	}
-	// conf.AssumeRole(assumeRoleArn) // FIXME
+	conf.AssumeRole(opt.AssumeRoleArn)
 
 	return &App{
 		appmesh: appmesh.NewFromConfig(conf.awsConfig),
@@ -39,6 +39,7 @@ func New(ctx context.Context, opt *Option) (*App, error) {
 
 type Option struct {
 	ConfigFilePath string
+	AssumeRoleArn  string
 }
 
 func unmarshalJson(src []byte, v interface{}, path string) error {

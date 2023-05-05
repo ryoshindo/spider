@@ -1,7 +1,3 @@
-.PHONY: run
-run: cmd/spider/main.go
-	go run cmd/spider/main.go
-
 .PHONY: build
 build: cmd/spider/main.go
 	go build -o cmd/spider/spider cmd/spider/main.go
@@ -12,3 +8,11 @@ test:
 
 lint:
 	golangci-lint run ./...
+
+test-apply: cmd/spider/spider
+	make build
+	./cmd/spider/spider apply --config ../spider-test/spider.yml
+
+test-destroy: cmd/spider/spider
+	make build
+	./cmd/spider/spider destroy --config ../spider-test/spider.yml
