@@ -37,7 +37,11 @@ func ParseCli(args []string) (string, *CliOptions, func(), error) {
 		AssumeRoleArn:  opts.AssumeRoleArn,
 	}
 
-	return sub, &opts, func() { c.PrintUsage(true) }, nil
+	return sub, &opts, func() {
+		if err := c.PrintUsage(true); err != nil {
+			return
+		}
+	}, nil
 }
 
 func dispatchCli(ctx context.Context, sub string, usage func(), opts *CliOptions) error {

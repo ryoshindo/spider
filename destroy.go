@@ -7,7 +7,9 @@ import (
 	"golang.org/x/exp/slog"
 )
 
-func (s *App) Destroy(ctx context.Context) error {
+type DestroyOption struct{}
+
+func (s *App) Destroy(ctx context.Context, _ DestroyOption) error {
 	s.Log(slog.LevelInfo, "Destroying AppMesh resources...")
 
 	if err := s.DestroyGatewayRoute(ctx); err != nil {
