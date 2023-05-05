@@ -9,10 +9,10 @@ test:
 lint:
 	golangci-lint run ./...
 
-test-apply: cmd/spider/spider
+test-apply:
 	make build
 	./cmd/spider/spider apply --config ../spider-test/spider.yml
 
-test-destroy: cmd/spider/spider
+test-destroy:
 	make build
 	./cmd/spider/spider destroy --config ../spider-test/spider.yml
