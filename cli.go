@@ -12,7 +12,7 @@ type CliOptions struct {
 	Config        string `help:"config file" default:"spider.yml"`
 	AssumeRoleArn string `help:"the Role ARN to assume" default:""`
 
-	Option *Option
+	Option *Option `kong:"-"`
 
 	Apply   *ApplyOption   `cmd:"" help:"apply resources"`
 	Destroy *DestroyOption `cmd:"" help:"destroy resources"`
