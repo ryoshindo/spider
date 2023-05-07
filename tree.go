@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/appmesh"
+	"github.com/aws/aws-sdk-go-v2/service/appmesh/types"
 	"github.com/ddddddO/gtree"
 )
 
@@ -41,49 +44,67 @@ func (s *App) Tree(ctx context.Context, opt TreeOption) error {
 				grTreeNode = vgTreeNode.Add(fmt.Sprintf("[GatewayRoute] %s", *grOutput.GatewayRoute.GatewayRouteName))
 			}
 
-			if grOutput.GatewayRoute.Spec.HttpRoute != nil {
-				grTreeNode.Add(fmt.Sprintf("[VirtualService/HttpRoute] %s", *grOutput.GatewayRoute.Spec.HttpRoute.Action.Target.VirtualService.VirtualServiceName))
+			var virtualServiceName string
+			switch {
+			case grOutput.GatewayRoute.Spec.HttpRoute != nil:
+				virtualServiceName = *grOutput.GatewayRoute.Spec.HttpRoute.Action.Target.VirtualService.VirtualServiceName
+				grTreeNode = grTreeNode.Add(fmt.Sprintf("[VirtualService/HttpRoute] %s", *grOutput.GatewayRoute.Spec.HttpRoute.Action.Target.VirtualService.VirtualServiceName))
+			case grOutput.GatewayRoute.Spec.Http2Route != nil:
+				virtualServiceName = *grOutput.GatewayRoute.Spec.Http2Route.Action.Target.VirtualService.VirtualServiceName
+				grTreeNode = grTreeNode.Add(fmt.Sprintf("[VirtualService/Http2Route] %s", *grOutput.GatewayRoute.Spec.Http2Route.Action.Target.VirtualService.VirtualServiceName))
+			case grOutput.GatewayRoute.Spec.GrpcRoute != nil:
+				virtualServiceName = *grOutput.GatewayRoute.Spec.GrpcRoute.Action.Target.VirtualService.VirtualServiceName
+				grTreeNode = grTreeNode.Add(fmt.Sprintf("[VirtualService/GrpcRoute] %s", *grOutput.GatewayRoute.Spec.GrpcRoute.Action.Target.VirtualService.VirtualServiceName))
 			}
-			if grOutput.GatewayRoute.Spec.Http2Route != nil {
-				grTreeNode.Add(fmt.Sprintf("[VirtualService/Http2Route] %s", *grOutput.GatewayRoute.Spec.Http2Route.Action.Target.VirtualService.VirtualServiceName))
+
+			virtualService, err := s.appmesh.DescribeVirtualService(ctx, &appmesh.DescribeVirtualServiceInput{
+				MeshName:           aws.String(s.config.Mesh.Name),
+				MeshOwner:          aws.String(s.config.Mesh.Owner),
+				VirtualServiceName: aws.String(virtualServiceName),
+			})
+			if err != nil {
+				return err
 			}
-			if grOutput.GatewayRoute.Spec.GrpcRoute != nil {
-				grTreeNode.Add(fmt.Sprintf("[VirtualService/GrpcRoute] %s", *grOutput.GatewayRoute.Spec.GrpcRoute.Action.Target.VirtualService.VirtualServiceName))
+
+			var vsTreeNode *gtree.Node
+			switch v := virtualService.VirtualService.Spec.Provider.(type) {
+			case *types.VirtualServiceProviderMemberVirtualNode:
+				virtualNodeName := *v.Value.VirtualNodeName
+				vsTreeNode = grTreeNode.Add(fmt.Sprintf("[VirtualNode] %s", virtualNodeName))
+				virtualNode, err := s.appmesh.DescribeVirtualNode(ctx, &appmesh.DescribeVirtualNodeInput{
+					MeshName:        aws.String(s.config.Mesh.Name),
+					MeshOwner:       aws.String(s.config.Mesh.Owner),
+					VirtualNodeName: aws.String(virtualNodeName),
+				})
+				if err != nil {
+					return err
+				}
+				vsTreeNode.Add(fmt.Sprintf("[VirtualNode] %s", *virtualNode.VirtualNode.VirtualNodeName))
+			case *types.VirtualServiceProviderMemberVirtualRouter:
+				virtualRouterName := *v.Value.VirtualRouterName
+				vsTreeNode = grTreeNode.Add(fmt.Sprintf("[VirtualRouter] %s", virtualRouterName))
+				virtualRouter, err := s.appmesh.DescribeVirtualRouter(ctx, &appmesh.DescribeVirtualRouterInput{
+					MeshName:          aws.String(s.config.Mesh.Name),
+					MeshOwner:         aws.String(s.config.Mesh.Owner),
+					VirtualRouterName: aws.String(virtualRouterName),
+				})
+				if err != nil {
+					return err
+				}
+				vsTreeNode.Add(fmt.Sprintf("[VirtualRouter] %s", *virtualRouter.VirtualRouter.VirtualRouterName))
+
+				virtualRouterRouteMap, err := s.getVirtualRouterRouteMap()
+				if err != nil {
+					return err
+				}
+				for _, routes := range virtualRouterRouteMap {
+					for _, route := range routes {
+						vsTreeNode.Add(fmt.Sprintf("[Route] %s", route))
+					}
+				}
+			default:
+				vsTreeNode = grTreeNode
 			}
-		}
-	}
-
-	for _, virtualService := range s.config.VirtualServices {
-		_, vsOutput, _ := s.DescribeVirtualService(ctx, virtualService.Path)
-		// var vsTreeNode *gtree.Node
-		if vsOutput.VirtualService != nil {
-			// vsTreeNode = root.Add(fmt.Sprintf("[VirtualService] %s", *vsOutput.VirtualService.VirtualServiceName))
-			root.Add(fmt.Sprintf("[VirtualService] %s", *vsOutput.VirtualService.VirtualServiceName))
-		}
-
-		provider := vsOutput.VirtualService.Spec.Provider
-		fmt.Println(provider)
-	}
-
-	for _, virtualRouter := range s.config.VirtualRouters {
-		_, vrOutput, _ := s.DescribeVirtualRouter(ctx, virtualRouter.Path)
-		var vrTreeNode *gtree.Node
-		if vrOutput.VirtualRouter != nil {
-			vrTreeNode = root.Add(fmt.Sprintf("[VirtualRouter] %s", *vrOutput.VirtualRouter.VirtualRouterName))
-		}
-
-		for _, route := range virtualRouter.Routes {
-			_, rOutput, _ := s.DescribeRoute(ctx, route.Path, virtualRouter.Path)
-			if rOutput.Route != nil {
-				vrTreeNode.Add(fmt.Sprintf("[Route] %s", *rOutput.Route.RouteName))
-			}
-		}
-	}
-
-	for _, virtualNode := range s.config.VirtualNodes {
-		_, vnOutput, _ := s.DescribeVirtualNode(ctx, virtualNode.Path)
-		if vnOutput.VirtualNode != nil {
-			root.Add(fmt.Sprintf("[VirtualNode] %s", *vnOutput.VirtualNode.VirtualNodeName))
 		}
 	}
 
