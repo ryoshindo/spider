@@ -16,6 +16,7 @@ type CliOptions struct {
 
 	Apply   *ApplyOption   `cmd:"" help:"apply resources"`
 	Destroy *DestroyOption `cmd:"" help:"destroy resources"`
+	Tree    *TreeOption    `cmd:"" help:"output tree"`
 }
 
 func ParseCli(args []string) (string, *CliOptions, func(), error) {
@@ -55,6 +56,8 @@ func dispatchCli(ctx context.Context, sub string, usage func(), opts *CliOptions
 		return app.Apply(ctx, *opts.Apply)
 	case "destroy":
 		return app.Destroy(ctx, *opts.Destroy)
+	case "tree":
+		return app.Tree(ctx, *opts.Tree)
 	default:
 		usage()
 	}
