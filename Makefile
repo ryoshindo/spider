@@ -16,3 +16,7 @@ test-apply:
 test-destroy:
 	make build
 	./cmd/spider/spider destroy --config ../spider-test/spider.yml
+
+test-tree:
+	make build
+	./cmd/spider/spider tree --config ../spider-test/spider.yml

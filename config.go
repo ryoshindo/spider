@@ -28,7 +28,6 @@ type Config struct {
 		Routes []struct {
 			Path string `yaml:"path"`
 		} `yaml:"routes"`
-		Name string
 	} `yaml:"virtual_routers"`
 	VirtualServices []struct {
 		Path string `yaml:"path"`
@@ -38,7 +37,6 @@ type Config struct {
 		GatewayRoutes []struct {
 			Path string `yaml:"path"`
 		} `yaml:"gateway_routes"`
-		Name string
 	} `yaml:"virtual_gateways"`
 
 	awsConfig aws.Config

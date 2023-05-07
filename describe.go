@@ -10,6 +10,22 @@ import (
 	"golang.org/x/exp/slog"
 )
 
+func (s *App) DescribeMesh(ctx context.Context) (*appmesh.DescribeMeshInput, *appmesh.DescribeMeshOutput, error) {
+	m := &DescribeMesh{s}
+	input, err := m.Load()
+	if err != nil {
+		return input, &appmesh.DescribeMeshOutput{}, err
+	}
+
+	output, err := s.appmesh.DescribeMesh(ctx, input)
+	if err != nil {
+		s.Log(slog.LevelWarn, fmt.Sprintf("Mesh: Mesh '%s' is not found", *input.MeshName))
+		return input, &appmesh.DescribeMeshOutput{}, err
+	}
+
+	return input, output, nil
+}
+
 func (s *App) DescribeVirtualNode(ctx context.Context, path string) (*appmesh.DescribeVirtualNodeInput, *appmesh.DescribeVirtualNodeOutput, error) {
 	vn := &DescribeVirtualNode{s}
 	input, err := vn.Load(path)
